@@ -1,48 +1,51 @@
 # Design-and-Implementation-of-YOLOv9-Convolutional-Layer-Acceleration-on-PYNQ-ZU
 
-### 🔍 專案簡介
+## 🔍 專案簡介
 深度學習（Deep Learning）與人工智慧（Artificial Intelligence, AI）近年來已成為各大科技公司投入的核心研究領域。其中，影像識別技術 因具備廣泛的應用價值而備受關注。在深度學習模型中，卷積神經網路（Convolutional Neural Network, CNN） 是影像辨識的主要架構，而卷積運算則為整體運算中最關鍵且最耗時的部分。由於卷積運算涉及大量重複且複雜的資料處理，傳統以 ARM 或 x86 為主的處理器架構 常面臨運算效能瓶頸。相較之下，FPGA（Field Programmable Gate Array） 具備高度並行運算特性，能有效加速此類運算流程，進而顯著提升邊緣運算的整體效能。
 
 ---
 
-🧠 研究背景
+## 🧠 研究背景
 #### 深度學習（Deep Learning）與人工智慧（Artificial Intelligence, AI）近年來已成為各大科技公司投入的核心研究領域。其中，影像識別技術 因具備廣泛的應用價值而備受關注。在深度學習模型中，卷積神經網路（Convolutional Neural Network, CNN） 是影像辨識的主要架構，而卷積運算則為整體運算中最關鍵且最耗時的部分。由於卷積運算涉及大量重複且複雜的資料處理，傳統以 ARM 或 x86 為主的處理器架構 常面臨運算效能瓶頸。相較之下，FPGA（Field Programmable Gate Array） 具備高度並行運算特性，能有效加速此類運算流程，進而顯著提升邊緣運算的整體效能。
 
 ---
-
-⚙️ 主要系統架構設計
-架構說明
-本論文提出一種名為 EPIC（Enhanced Partition for Independent Convolution） 的架構優化方案。該方法透過 輸入資料的分割策略，有效解決了卷積運算中需重複載入輸入數據的造成資源不足的問題。EPIC 架構將原先單一的大型卷積模組拆分為 四個可獨立運作的小型卷積模組，使各模組能同時執行運算，並且每個模組內的運算也能同時運算，實現更高層次的平行化。此設計可以充分發揮 FPGA 的高度並行運算能力，大幅強化卷積層的整體執行效能。
-
-- **輸入與權重分割**：  
-  將輸入與權重資料分為四個部分（`I_part1~4`, `W_part1~4`）  
-  以降低記憶體存取頻率與共享衝突。
-- **多運算模組平行化**：  
-  使用四個 `Compute_o` 模組同步進行運算，提升資料吞吐量。
-- **資料流優化 (Dataflow)**：  
-  運用 HLS dataflow 技術使資料傳輸與運算重疊，降低延遲。
-- **參數彈性化設計**：  
-  支援多種 Kernel、Stride、Padding 設定，便於應用於不同卷積層。
-
-### 🔹 模組組成
-| 模組名稱 | 功能描述 |
-|-----------|-----------|
-| `conv2dhls()` | 主卷積加速核心，負責輸入、權重與輸出資料流整合 |
-| `compute_outputtt()` | DSP 驅動的平行化乘加運算核心 |
-| `mix_4030()` | 多輸出組合與加總模組，整合各 Compute_o 結果 |
-| AXI Interface | 改良式記憶體介面，減少通道競爭與訪問延遲 |
-
----
-
 ## 💻 實作與開發環境
 - **硬體平台**：Xilinx PYNQ-ZU (Zynq UltraScale+)  
 - **開發工具**：Vitis HLS、Vivado、PYNQ Framework  
 - **開發語言**：C / C++（硬體架構）、Python（控制與驗證）  
-- **主要特性**：
-  - 模組化設計，支援 Dataflow 架構  
-  - 高可重構性，方便後續模型遷移（如 YOLOv8 → YOLOv9）  
-  - FPGA 與 ARM 處理器之間的軟硬體協同運算整合  
+---
 
+## ⚙️ 主要系統架構設計
+### 架構說明
+本論文提出一種名為 EPIC（Enhanced Partition for Independent Convolution） 的架構優化方案。該方法透過 輸入資料的分割策略，有效解決了卷積運算中需重複載入輸入數據的造成資源不足的問題。EPIC 架構將原先單一的大型卷積模組拆分為 四個可獨立運作的小型卷積模組，使各模組能同時執行運算，並且每個模組內的運算也能同時運算，實現更高層次的平行化。此設計可以充分發揮 FPGA 的高度並行運算能力，大幅強化卷積層的整體執行效能。
+
+- **輸入與權重分割**：
+  將輸入與權重資料分為2個部分，以解決記憶體存取計算的衝突。
+- **多運算模組平行化**：  
+  使用四個 `Conv` 模組進行並行運算，且4個conv模組內的運算也全部展開進行並行運算處理，大量提升資料吞吐量。
+- **資料流優化 (Dataflow)**：  
+  運用 HLS dataflow 技術使資料傳輸與運算重疊，降低延遲。
+- **參數彈性化設計**：  
+  支援多種 Kernel、Stride、Padding 等設定，便於應用於不同卷積層可做調整使用。
+  
+### EPIC 架構
+<img width="705" height="500" alt="image" src="https://github.com/user-attachments/assets/a7e12ce5-4ef9-4228-8b46-3ab39c02b87e" />
+
+## Parallel Processing 模組
+<img width="750" height="440" alt="圖片200" src="https://github.com/user-attachments/assets/acef31b0-70e0-4153-83b2-d67d63b79ffa" />
+
+
+
+### 🔹 各模組功能說明
+| 模組名稱 | 功能描述 |
+|-----------|-----------|
+| `EPIC` | 完整的卷積運算的流程 |
+| `Parallel Processing` | 處理並行運算的主要模組 |
+| `Conv` | 卷積運算的核心計算模組 |
+|  `Output add` | 將四個Conv計算出來的結果做相加 |
+
+---
+## ⚙️ 硬體資源優化設計
 ---
 
 ## 📈 效能結果
