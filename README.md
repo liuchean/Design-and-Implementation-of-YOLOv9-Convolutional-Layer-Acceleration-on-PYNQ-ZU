@@ -1,17 +1,13 @@
 # Design-and-Implementation-of-YOLOv9-Convolutional-Layer-Acceleration-on-PYNQ-ZU
 
 ### 🔍 專案簡介
-本專案實作了 **YOLOv9 物件偵測模型在 FPGA 上的硬體加速架構**，  
-目標是透過 **平行運算與記憶體訪問優化**，提升卷積層運算效能，  
-使 FPGA 能在邊緣運算中達到高效能與高穩定度的影像辨識加速效果。
-
+本論文的主題是 **以FPGA去加速YOLOv9卷積層**，目標透過 **架構修改與硬體資源優化**的方式，發揮出FPGA並行運算的錢能，達到提升卷積的運算效能，使 FPGA 能在邊緣運算中達到高效能與高穩定度的影像辨識加速效果。
 ---
 
-## 🧠 研究背景
-在深度學習的卷積神經網路（CNN）中，卷積運算佔整體計算量的主要部分。  
-然而在平行化運算過程中，輸入與權重資料的重複訪問會造成效能瓶頸。  
+## 🧠 研究背景及方向
+深度學習（Deep Learning）與人工智慧（Artificial Intelligence , AI）近年來已成為各大科技公司投入的重點領域。但是在深度學習的卷積神經網路 ( CNN ) 中，卷積運算佔整體計算量的主要部分，然而在傳統ASIC架構處理器的運算過程中，卷積龐大的運算量常常會造成運算瓶頸。所以論文的主要方向就是在YOLO模型中用FPGA去取代ASCI計算部分的卷積運算，達到加速的目標。 
 
-本研究提出一種 **最佳化平行處理架構（Optimized Parallel Processing Architecture, OPPA）**，  
+本研究提出一種 **EPIC ( Enhanced Partition for Independent Convolution )架構**，  
 透過將輸入與權重資料分割為多個部分，降低重複訪問、提升運算單元利用率，  
 達成加速卷積層運算與提升 FPGA 資源效率的目標。
 
