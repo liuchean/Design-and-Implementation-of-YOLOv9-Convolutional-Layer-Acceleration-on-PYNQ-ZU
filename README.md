@@ -16,11 +16,11 @@
 ---
 
 ## 主要系統架構設計
-### EPIC（Enhanced Partition for Independent Convolution）架構設計背景:
+### EPIC（Enhanced Partition for Independent Convolution）架構設計背景 :
 在PYNQ-ZU平台（ 基於FPGA而非ARM ）上執行卷積運算時，未採用任何專門的優化策略實現運算，會導致 FPGA 無法正常發揮出並行運算的優勢，造成運算速度低下，無法與利用PyTorch內建的Conv2d運算函數相比。所以需要重新設計卷積的運算架構，使 FPGA 能充分發揮出價值。
 起初本論文提出一平行處理的架構方式，雖然證明方向正確，但因為有較大的硬體資源限制問題，運算效能也不達標，所以就進一步提出 EPIC 架構。
 
-### EPIC 架構說明:
+### EPIC 架構說明 :
 本論文提出一種名為 EPIC 的架構優化方案。該方法透過輸入資料的分割策略，有效解決了卷積運算中需重複載入輸入數據的造成資源不足的問題。EPIC 架構將原先單一的大型卷積模組拆分為 四個可獨立運作的小型卷積模組，使各模組能同時執行運算，並且每個模組內的運算也能同時運算，實現更高層次的平行化。此設計可以充分發揮 FPGA 的高度並行運算能力，大幅強化卷積層的整體執行效能。
 
 - **輸入與權重分割**：
@@ -32,15 +32,15 @@
 - **參數彈性化設計**：  
   FPGA具有易修改的特色，可支援不同卷積參數設定，便於應用於不同卷積層可做調整使用。
   
-### EPIC 架構
+### EPIC 架構 :
 <img width="500" height="400" alt="image" src="https://github.com/user-attachments/assets/a7e12ce5-4ef9-4228-8b46-3ab39c02b87e" />
 
-## Parallel Processing 模組
+### Parallel Processing 模組 :
 <img width="500" height="293" alt="圖片200" src="https://github.com/user-attachments/assets/acef31b0-70e0-4153-83b2-d67d63b79ffa" />
 
 
 
-### 🔹 各模組功能說明
+### 🔹 各模組功能說明 :
 | 模組名稱 | 功能描述 |
 |-----------|-----------|
 | `EPIC` | 完整的卷積運算的流程 |
