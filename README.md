@@ -32,10 +32,10 @@
 - **參數彈性化設計**：  
   FPGA具有易修改的特色，可支援不同卷積參數設定，便於應用於不同卷積層可做調整使用。
   
-### EPIC 架構 :
+### EPIC 架構
 <img width="500" height="400" alt="image" src="https://github.com/user-attachments/assets/a7e12ce5-4ef9-4228-8b46-3ab39c02b87e" />
 
-### Parallel Processing 模組 :
+### Parallel Processing 模組
 <img width="500" height="293" alt="圖片200" src="https://github.com/user-attachments/assets/acef31b0-70e0-4153-83b2-d67d63b79ffa" />
 
 
